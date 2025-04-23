@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Security Toolkit</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      transition: background 0.3s, color 0.3s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    :root {
+      --bg: #121212;
+      --fg: #f0f0f0;
+      --card: #1e1e1e;
+      --accent: #0077cc;
+      --accent-hover: #005fa3;
+    }
+    .light {
+      --bg: #f9f9f9;
+      --fg: #222;
+      --card: #ffffff;
+      --accent: #0066aa;
+      --accent-hover: #004477;
+    }
+    header {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    header h1 { font-size: 1.5rem; }
+    .theme-toggle {
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      transition: background 0.3s;
+    }
+    .theme-toggle:hover { background: var(--accent-hover); }
+    nav {
+      display: flex;
+      background: var(--card);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    nav button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      background: var(--card);
+      color: var(--fg);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    nav button.active, nav button:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+    }
+    .section {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .section.active { display: block; }
+    .card {
+      background: var(--card);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .card input[type="text"], .card input[type="password"], .card textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0 1rem;
+      border: 1px solid #888;
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    .card button {
+      padding: 0.7rem 1.2rem;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .card button:hover { background: var(--accent-hover); }
+    .meter {
+      height: 8px;
+      background: #444;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .meter-fill {
+      height: 100%;
+      width: 0;
+      background: #28a745;
+      transition: width 0.3s;
+    }
+    pre {
+      background: var(--bg);
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ultimate Security Toolkit</h1>
+    <div class="theme-toggle" id="themeToggle">🌙</div>
+  </header>
+  <nav id="nav">
+    <button data-section="home" class="active">Home</button>
+    <button data-section="encrypt">Encrypt/Decrypt</button>
+    <button data-section="password">Password Strength</button>
+    <button data-section="hash">Hashing</button>
+    <button data-section="fp">Fingerprint</button>
+  </nav>
+  <main>
+    <section id="home" class="section active">
+      <div class="card">
+        <h2>Welcome!</h2>
+        <p>Select a tool from above to get started. This suite includes:</p>
+        <ul>
+          <li>Custom Encryption/Decryption</li>
+          <li>Password Strength Checker</li>
+          <li>Text Hashing (SHA-256)</li>
+          <li>Browser Fingerprint Generator</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="encrypt" class="section">
+      <div class="card">
+        <h2>Encrypt / Decrypt</h2>
+        <textarea id="encInput" rows="3" placeholder="Enter text..."></textarea>
+        <div style="display:flex;gap:1rem;">
+          <button onclick="encryptText()">Encrypt</button>
+          <button onclick="decryptText()">Decrypt</button>
+        </div>
+        <h3>Result</h3>
+        <pre id="encOutput"></pre>
+      </div>
+    </section>
+
+    <section id="password" class="section">
+      <div class="card">
+        <h2>Password Strength</h2>
+        <input type="password" id="pwdInput" placeholder="Enter password..." />
+        <div class="meter"><div id="pwdMeter" class="meter-fill"></div></div>
+        <p id="pwdFeedback"></p>
+      </div>
+    </section>
+
+    <section id="hash" class="section">
+      <div class="card">
+        <h2>Hash Text (SHA-256)</h2>
+        <textarea id="hashInput" rows="2" placeholder="Enter text..."></textarea>
+        <button onclick="computeHash()">Compute Hash</button>
+        <h3>SHA-256</h3>
+        <pre id="hashOutput"></pre>
+      </div>
+    </section>
+
+    <section id="fp" class="section">
+      <div class="card">
+        <h2>Browser Fingerprint</h2>
+        <button onclick="generateFingerprint()">Generate Fingerprint</button>
+        <h3>Fingerprint</h3>
+        <pre id="fpOutput"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Navigation
+    document.getElementById('nav').addEventListener('click', e => {
+      if (e.target.dataset.section) {
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(e.target.dataset.section).classList.add('active');
+      }
+    });
+
+    // Theme Toggle
+    const toggle = document.getElementById('themeToggle');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      toggle.textContent = document.body.classList.contains('light') ? '🌞' : '🌙';
+    });
+
+    // Encryption Rules
+    const rules = {"a":"1j2","b":"#x9","c":"v@7","d":"*k5","e":"zz!","f":"8^r","g":"t$1","h":"!3m","i":"q&w","j":"4b*","k":"0z^","l":"x_+","m":"%c9","n":"a@a","o":"9!l","p":"$g0","q":"&k#","r":"7?x","s":"w!3","t":"v*1","u":"@e@","v":"n%2","w":"3lz","x":"^v9","y":"0_r","z":"b1&","0":"00*","1":"11^","2":"20#","3":"12@","4":"47$","5":"50%","6":"16!","7":"71&","8":"98~","9":"59*","!":"!-!","@":"@@@","#":"#$#","$":"s$s","%":"p#%","^":"^^*","&":"&7&","*":"*_*","(":"(9(",")":")0)","-":"-!-,","_":"-_-","=":"=+=","+":"+*+","[":"[[{","]":"}]]"," ":"$-!"};
+    const reverseRules = Object.fromEntries(Object.entries(rules).map(([k,v])=>[v,k]));
+
+    // Encryption / Decryption
+    function encryptText() {
+      const text = document.getElementById('encInput').value.toLowerCase();
+      let out = '';
+      for (let ch of text) out += rules[ch] || ch;
+      document.getElementById('encOutput').textContent = out;
+    }
+    function decryptText() {
+      const text = document.getElementById('encInput').value;
+      let out = '', buf = '';
+      for (let c of text) {
+        buf += c;
+        if (reverseRules[buf]) { out += reverseRules[buf]; buf = ''; }
+      }
+      if (buf) out += `[?${buf}]`;
+      document.getElementById('encOutput').textContent = out;
+    }
+
+    // Password Strength
+    document.getElementById('pwdInput').addEventListener('input', e => {
+      const pw = e.target.value;
+      let score = 0;
+      if (pw.length >= 8) score += 1;
+      if (/[A-Z]/.test(pw)) score += 1;
+      if (/[a-z]/.test(pw)) score += 1;
+      if (/[0-9]/.test(pw)) score += 1;
+      if (/[^A-Za-z0-9]/.test(pw)) score += 1;
+      const pct = (score/5)*100;
+      document.getElementById('pwdMeter').style.width = pct + '%';
+      let msg = ['Very Weak','Weak','Fair','Good','Strong'][score];
+      document.getElementById('pwdFeedback').textContent = msg;
+    });
+
+    // Hashing
+    async function computeHash() {
+      const txt = new TextEncoder().encode(document.getElementById('hashInput').value);
+      const hashBuf = await crypto.subtle.digest('SHA-256', txt);
+      const hashArr = Array.from(new Uint8Array(hashBuf));
+      const hex = hashArr.map(b => b.toString(16).padStart(2,'0')).join('');
+      document.getElementById('hashOutput').textContent = hex;
+    }
+
+    // Fingerprint
+    async function generateFingerprint() {
+      const data = [
+        navigator.userAgent, navigator.language,
+        screen.width+'x'+screen.height, Intl.DateTimeFormat().resolvedOptions().timeZone
+      ].join('||');
+      const buf = new TextEncoder().encode(data);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      const arr = Array.from(new Uint8Array(hash));
+      const fp = arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+      document.getElementById('fpOutput').textContent = fp;
+    }
+  </script>
+</body>
+</html>
